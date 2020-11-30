@@ -12,8 +12,12 @@ const BurgerControls=(props)=>(
         <div className="BuildControls">
             <p>Current Price:<strong>{props.price.toFixed(2)}</strong></p>
             {controls.map(ctrl=>(
-                 <BuildControl key={ctrl.label} label={ctrl.label} added={()=>props.ingredientadded(ctrl.type)} removed={()=>props.ingredientremove(ctrl.type)} />
+                 <BuildControl key={ctrl.label} label={ctrl.label} added={()=>props.ingredientadded(ctrl.type)} removed={()=>props.ingredientremove(ctrl.type)}  />
+                 
             ))};
+            <button className="OrderButton" disabled={!props.purchaseable} onClick={props.ordered}>
+                     Order Now
+                 </button>
         </div>
     );
 export default BurgerControls;
