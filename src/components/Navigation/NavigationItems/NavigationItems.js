@@ -3,10 +3,10 @@ import "./NavigationItems.css"
 import NavigationItem from "./NavigationItem/NavigationItem"
 const navigatioitems=(props)=>(
     <ul className="NavigationItems">
-        <NavigationItem link="/" active>
+        <NavigationItem link="/" exact>
             BurgerBuilder
         </NavigationItem>
-        <NavigationItem link="/">Checkout</NavigationItem>
+        <NavigationItem link="/orders">Orders</NavigationItem>
     </ul>
 );
 

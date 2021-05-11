@@ -78,28 +78,32 @@ class BurgerBuilder extends Component{
     }
     purchaseContinueHandler=()=>{
         //alert('you continue!!')
-        this.setState({loading:true})
-        const order={
-            ingredients: this.state.ingredients,
-            price: this.state.totalprice,
-            customer:{
-                name:'kaartik',
-                email:'test@tes.com'
-            }
+        
+        const query=[];
+        for(let i in this.state.ingredients){
+            query.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]))
         }
-        axios.post('/orders.json',order)
-        .then(response=>this.setState({loading:false}))
-        .catch(error=>this.setState({loading:false}));
+        query.push('price='+this.state.totalprice)
+        const querystring=query.join('&');
+        this.props.history.push({
+            pathname:'/checkout',
+            search:'?'+querystring
+        });
     }
     render(){
         let Ordersummary=null;
-         
+         const disabledInfo={
+            ...this.state.ingredients
+         };
+        for(let key in disabledInfo){
+            disabledInfo[key]=disabledInfo[key]<=0
+        }
         let burger=<Spinner />
         if(this.state.ingredients){
          burger=(
              <Aux>   
                 <Burger ingredients={this.state.ingredients}/>
-                <BurgerControls ordered={this.purchaseHandler} ingredientadded={this.addIngredientHandler} ingredientremove={this.removeIngredientHandler} price={this.state.totalprice} purchaseable={this.state.purchaseable}/>
+                <BurgerControls ordered={this.purchaseHandler} disabled={disabledInfo} ingredientadded={this.addIngredientHandler} ingredientremove={this.removeIngredientHandler} price={this.state.totalprice} purchaseable={this.state.purchaseable}/>
             </Aux>
             );
             Ordersummary=<OrderSummary price={this.state.totalprice }ingredients={this.state.ingredients} purchaseCancel={this.purchaseCancelHandler} purchaseContinue={this.purchaseContinueHandler}/>
