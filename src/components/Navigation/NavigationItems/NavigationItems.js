@@ -6,7 +6,8 @@ const navigatioitems=(props)=>(
         <NavigationItem link="/" exact>
             BurgerBuilder
         </NavigationItem>
-        <NavigationItem link="/orders">Orders</NavigationItem>
+        {props.isAuth ?<NavigationItem link="/orders">Orders</NavigationItem>:null}
+        {!props.isAuth ?<NavigationItem link="/signup">Signup</NavigationItem> : <NavigationItem link="/signout">Signout</NavigationItem>}
     </ul>
 );
 

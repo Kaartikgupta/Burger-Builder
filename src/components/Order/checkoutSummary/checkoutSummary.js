@@ -5,7 +5,7 @@ import '../../UI/Button/Button.css';
 import './checkoutSummary.css'
 const checkoutSummary=(props)=>{
     return(
-        <div Classname="checkoutSummary">
+        <div className="checkoutSummary">
             <h2>Thanks!</h2>
             <div style={{width:'100%',margin:'auto'}}>
             <Burger ingredients={props.ingredients}/>

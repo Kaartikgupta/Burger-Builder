@@ -1,32 +1,20 @@
 import React, { Component } from 'react';
 import Order from '../../components/Order/order';
-import axios from '../../axios-order';
-
+// import axios from '../../axios-order';
+import * as action from '../../store/action/order';
+import {connect } from 'react-redux';
 class Orders extends Component{
     state={
         orders:[],
         loading:true
     }
     componentDidMount(){
-        
-        axios.get('/orders.json')
-        .then((res)=>{
-            const fetchorder=[];
-            for(let key in res.data){
-                fetchorder.push({...res.data[key], id:key})
-            }
-            this.setState({loading:false,orders:fetchorder})
-            
-        })
-        .catch(err=>{
-            this.setState({loading:false})
-        })
-        
+        this.props.onFetchOrder(this.props.token,this.props.userId)
     }
     render(){
         return(
             <div>
-               {this.state.orders.map(order=>(
+               {this.props.orders.map(order=>(
                     <Order 
                         key={order.key}
                         ingredients={order.ingredients}
@@ -37,5 +25,17 @@ class Orders extends Component{
         )
     }
 }
-
-export default Orders;
+const mapStatetoProps=state=>{
+    return{
+        orders: state.order.orders,
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
+    };
+}
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        onFetchOrder: (token,userId)=>dispatch(action.fetchBurger(token,  userId))
+    }
+}
+export default connect(mapStatetoProps,mapDispatchToProps)(Orders);

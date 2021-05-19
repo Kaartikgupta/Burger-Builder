@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import './contact.css';
 import Button from '../../../components/UI/Button/Button';
-import axios from '../../../axios-order';
+// import axios from '../../../axios-order';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import {withRouter} from 'react';
 import Input from '../../../components/Input/input';
+import {connect} from 'react-redux'
+import * as actionType from '../../../store/action/order';
 class Contact extends Component{
 state = {
     orderForm: {
@@ -85,7 +86,7 @@ state = {
                     {value: 'cheapest', displayValue: 'Cheapest'}
                 ]
             },
-            value: '',
+            value: 'fastest',
             validation: {},
             valid: true
         }
@@ -96,24 +97,26 @@ state = {
 
 orderHandler = ( event ) => {
     event.preventDefault();
-    this.setState( { loading: true } );
+   
     const formData = {};
     for (let formElementIdentifier in this.state.orderForm) {
         formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
     }
     const order = {
-        ingredients: this.props.ingredients,
+        ingredients: this.props.ings,
         price: this.props.price,
-        orderData: formData
+        orderData: formData,
+        userId: this.props.userId
     }
-    axios.post( '/orders.json', order )
-        .then( response => {
-            this.setState( { loading: false } );
-            this.props.history.push( '/' );
-        } )
-        .catch( error => {
-            this.setState( { loading: false } );
-        } );
+    this.props.onOrderBurger(order, this.props.token);
+    // axios.post( '/orders.json', order )
+    //     .then( response => {
+    //         this.setState( { loading: false } );
+    //         this.props.history.push( '/' );
+    //     } )
+    //     .catch( error => {
+    //         this.setState( { loading: false } );
+    //     } );
 }
 
 checkValidity=(value, rules)=> {
@@ -190,7 +193,7 @@ render () {
             <Button btnType="Success" disabled={!this.state.formIsValid}>ORDER</Button>
         </form>
     );
-    if ( this.state.loading ) {
+    if ( this.props.loading ) {
         form = <Spinner />;
     }
     return (
@@ -201,4 +204,18 @@ render () {
     );
 }
 }
-export default Contact;
+const mapStatetoProps=(state)=>{
+    return{
+        ings:state.burgerBuilder.ingredients,
+        price:state.burgerBuilder.totalprice,
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
+    }
+}
+const mapDispatchtoProps=(dispatch)=>{
+    return{
+        onOrderBurger:(orderData,token)=>dispatch(actionType.purchaseBurger(orderData,token))
+    }
+}
+export default connect(mapStatetoProps,mapDispatchtoProps)(Contact);
